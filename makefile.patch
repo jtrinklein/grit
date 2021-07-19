@@ -1,0 +1,46 @@
+diff --git a/Makefile b/Makefile
+index 05a9aba..85f9e36 100755
+--- a/Makefile
++++ b/Makefile
+@@ -1,7 +1,7 @@
+ GRIT_VERSION	:=	0.8.6
+ GRIT_BUILD	:=	20100317
+ 
+-CXXFLAGS	:=	-Icldib -Ilibgrit -Iextlib
++CXXFLAGS	:=	-Icldib -Ilibgrit -Iextlib  -stdlib=libc++
+ CXXFLAGS	+=	-DGRIT_VERSION=\"$(GRIT_VERSION)\" -DGRIT_BUILD=\"$(GRIT_BUILD)\"
+ LDFLAGS		:=
+ 
+@@ -29,11 +29,11 @@ ifneq (,$(findstring CYGWIN,$(UNAME)))
+ endif
+ 
+ ifneq (,$(findstring Darwin,$(UNAME)))
+-	SDK	:=	/Developer/SDKs/MacOSX10.4u.sdk
+-	OSXCFLAGS	:= -mmacosx-version-min=10.4 -isysroot $(SDK) -arch i386 -arch ppc
+-	OSXCXXFLAGS	:=	$(OSXCFLAGS)
+-	CXXFLAGS	+=	-fvisibility=hidden
+-	LDFLAGS		+= -mmacosx-version-min=10.4 -Wl,-syslibroot,$(SDK) -arch i386 -arch ppc
++	SDK := /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk
++	OSXCFLAGS := -mmacosx-version-min=10.9 -isysroot $(SDK) -arch x86_64
++	OSXCXXFLAGS := $(OSXCFLAGS)
++	CXXFLAGS += -fvisibility=hidden
++	LDFLAGS += -mmacosx-version-min=10.9 -Wl,-syslibroot,$(SDK) -arch x86_64
+ endif
+ 
+ ifneq (,$(findstring Linux,$(UNAME)))
+@@ -99,13 +99,13 @@ DEPENDS		:=	$(GRIT_OBJ:.o=.d) $(LIBCLDIB_OBJ:.o=.d) $(LIBGRIT_OBJ:.o=.d)
+ 
+ SRCDIRS	:= $(CLDIB_DIR) $(LIBGRIT_DIR) $(GRIT_DIR) $(EXTLIB_DIR)
+ INCDIRS	:= $(CLDIB_DIR) $(LIBGRIT_DIR) $(EXTLIB_DIR)
+-LIBDIRS	:= .
++LIBDIRS	:= . /usr/local/lib
+ 
+ INCLUDE		:= $(foreach dir, $(INCDIRS), -I$(dir))
+ LIBPATHS	:= $(foreach dir, $(LIBDIRS), -L$(dir))
+ VPATH		:= $(foreach dir, $(SRCDIRS), $(dir))
+ 
+-CPPFLAGS	+= $(INCLUDE)
++CPPFLAGS	+= $(INCLUDE) -stdlib=libc++
+ 
+ # ---------------------------------------------------------------------
+ # Build rules
